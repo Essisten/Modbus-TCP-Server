@@ -1,0 +1,56 @@
+﻿<Window x:Class="ModbusTCP_Server.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ModbusTCP_Server"
+        mc:Ignorable="d"
+        Title="ModbusTCP Server" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="40*"/>
+            <ColumnDefinition Width="60*"/>
+        </Grid.ColumnDefinitions>
+        <DataGrid Grid.Column="2" Name="Sheet" DataContext="{Binding Source=devices}" AutoGenerateColumns="False" IsReadOnly="True" SelectedCellsChanged="Sheet_SelectedCellsChanged">
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="Устройство" Binding="{Binding Path=ID}"/>
+                <DataGridTextColumn Header="Coils"  Binding="{Binding Path=Coil}"/>
+                <DataGridTextColumn Header="Discrete Inputs" Binding="{Binding Path=Discrete_Input}"/>
+                <DataGridTextColumn Header="Holding Registers" Binding="{Binding Path=Holding_Register}"/>
+                <DataGridTextColumn Header="Input Registers" Binding="{Binding Path=Input_Register}"/>
+            </DataGrid.Columns>
+        </DataGrid>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="40*"/>
+                <ColumnDefinition Width="80*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="60"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="40"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <Label Content="IP" HorizontalAlignment="Right" Margin="10" VerticalAlignment="Bottom"/>
+            <TextBox Name="IP_textbox" Grid.Column="1" HorizontalAlignment="Left" Margin="10" Text="127.0.0.1" VerticalAlignment="Bottom" Width="128"/>
+            <Label Content="TCP порт" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="1"/>
+            <TextBox Name="Port_textbox" Grid.Column="1" Grid.Row="1" HorizontalAlignment="Left" Margin="10" Text="502" VerticalAlignment="Center" Width="64"/>
+            <Label Content="Макс клиентов" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="2"/>
+            <TextBox Name="MaxClient_textbox" Grid.Column="1" Grid.Row="2" HorizontalAlignment="Left" Margin="10,0,0,0" Text="(не работает)" VerticalAlignment="Center" Width="128"/>
+            <Label Content="Устройство" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="3"/>
+            <ComboBox Name="Device_combobox" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Width="128"/>
+            <Label Content="Пространство" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="4"/>
+            <ComboBox Name="Cell_combobox" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Width="128" SelectionChanged="Cell_combobox_SelectionChanged"/>
+            <Label Content="Значение" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="5"/>
+            <ComboBox Name="Ceil_combobox" Visibility="Hidden" Grid.Column="1" Grid.Row="5" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Width="128"/>
+            <TextBox Name="Register_textbox" Visibility="Hidden" Grid.Column="1" Grid.Row="5" HorizontalAlignment="Left" Margin="10,0,0,0" Text="(не работает)" VerticalAlignment="Center" Width="128"/>
+            <Button Name="LaunchButton" Content="Запустить" HorizontalAlignment="Left" VerticalAlignment="bottom" Margin="30" Grid.Column="1" Grid.Row="6" Click="LaunchButton_Click"/>
+            <Button Name="Send_button" Content="Отправить" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="30" Grid.Row="6" Grid.Column="1"/>
+            <Label Name="Connections" Content="Подключений: 0" VerticalAlignment="Bottom" HorizontalAlignment="Left" Grid.Row="6" Grid.Column="1"/>
+        </Grid>
+
+    </Grid>
+</Window>
