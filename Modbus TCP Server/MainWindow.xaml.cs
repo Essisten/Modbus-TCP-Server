@@ -17,12 +17,20 @@ namespace ModbusTCP_Server
         private bool started;
         private ModbusServer server;
         private List<Device> devices;
-        int counter = 0;    //только для дебага
+        private Device selected_device;
         public MainWindow()
         {
             InitializeComponent();
             started = false;
             devices = new List<Device>();
+            Cell_combobox.Items.Add("Coil");
+            Cell_combobox.Items.Add("Discrete Input");
+            Cell_combobox.Items.Add("Holding Register");
+            Cell_combobox.Items.Add("Input Register");
+            Cell_combobox.SelectedIndex = 0;
+
+            Ceil_combobox.Items.Add("False");
+            Ceil_combobox.Items.Add("True");
         }
 
         private void LaunchButton_Click(object sender, RoutedEventArgs e)
@@ -88,9 +96,100 @@ namespace ModbusTCP_Server
                     Connections.Content = $"Подключений: 0";
                 else
                     Connections.Content = $"Подключений: {server.NumberOfConnections}";
+                Device_combobox.Items.Clear();
+                foreach (Device d in devices)
+                {
+                    Device_combobox.Items.Add(d.ID);
+                }
+                if (devices.Count > 0)
+                {
+                    Device_combobox.SelectedIndex = 0;
+                    Sheet.SelectedIndex = 0;
+                }
             });
         }
 
+        private void Cell_combobox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            UpdateDataFields();
+        }
+
+        private void Sheet_SelectedCellsChanged(object sender, System.Windows.Controls.SelectedCellsChangedEventArgs e)
+        {
+            Device device = (Device)Sheet.SelectedItem;
+            if (device == null)
+                return;
+            int item_id = Device_combobox.Items.IndexOf(device.ID);
+            if (item_id == -1)
+            {
+                MessageBox.Show("Ошибка", "Не найдено устройство", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            Device_combobox.SelectedIndex = item_id;
+            UpdateDataFields();
+        }
+
+        private void Device_combobox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
+        {
+            if (!started || Device_combobox.SelectedItem == null)
+                return;
+            int device_id = int.Parse(Device_combobox.SelectedItem.ToString());
+            selected_device = devices.Find(_ => _.ID == device_id);
+            Sheet.SelectedItem = selected_device;
+            UpdateDataFields();
+        }
+
+        private void Send_button_Click(object sender, RoutedEventArgs e)
+        {
+            if (!started)
+                return;
+            if (Cell_combobox.SelectedIndex < 2)
+            {
+                bool value = Convert.ToBoolean(Ceil_combobox.SelectedIndex);
+                if (Cell_combobox.SelectedIndex == 0)
+                    server.coils.localArray[selected_device.ID] = value;
+                else
+                    server.discreteInputs.localArray[selected_device.ID] = value;
+            }
+            else
+            {
+                if (!short.TryParse(Register_textbox.Text, out short value))
+                {
+                    MessageBox.Show("Недопустимое значение переменной!", "Ошибка отправки", MessageBoxButton.OK, MessageBoxImage.Error);
+                    return;
+                }
+                if (Cell_combobox.SelectedIndex == 2)
+                    server.holdingRegisters.localArray[selected_device.ID] = value;
+                else
+                    server.inputRegisters.localArray[selected_device.ID] = value;
+            }
+            UpdateSheet();
+        }
+        private void UpdateDataFields()
+        {
+            if (Cell_combobox.SelectedIndex < 2)
+            {
+                Register_textbox.Visibility = Visibility.Hidden;
+                Ceil_combobox.Visibility = Visibility.Visible;
+                bool value;
+                if (Cell_combobox.SelectedIndex == 0)
+                    value = selected_device.Coil;
+                else
+                    value = selected_device.Discrete_Input;
+                Ceil_combobox.SelectedIndex = Convert.ToInt32(value);
+            }
+            else
+            {
+                Ceil_combobox.Visibility = Visibility.Hidden;
+                Register_textbox.Visibility = Visibility.Visible;
+                int value;
+                if (Cell_combobox.SelectedIndex == 2)
+                    value = selected_device.Holding_Register;
+                else
+                    value = selected_device.Input_Register;
+                Register_textbox.Text = value.ToString();
+            }
+        }
         private void Server_CoilsChanged(int coil, int numberOfCoils)
         {
             UpdateSheet();
@@ -103,18 +202,8 @@ namespace ModbusTCP_Server
 
         private void Server_NumberOfConnectedClientsChanged()
         {
-            UpdateSheet();
+            //UpdateSheet();
             //Тут должно быть ограничение на количество подключений, но я не знаю как это сделать
-        }
-
-        private void Cell_combobox_SelectionChanged(object sender, System.Windows.Controls.SelectionChangedEventArgs e)
-        {
-
-        }
-
-        private void Sheet_SelectedCellsChanged(object sender, System.Windows.Controls.SelectedCellsChangedEventArgs e)
-        {
-
         }
     }
 }
