@@ -76,7 +76,6 @@ namespace ModbusTCP_Server
         private void UpdateSheet()
         {
             devices.Clear();
-            //Console.WriteLine(counter++);
             if (started)
             {
                 for (int i = 0; i < server.coils.localArray.Length; i++)
@@ -91,6 +90,7 @@ namespace ModbusTCP_Server
             }
             Dispatcher.Invoke(() =>
             {
+                int old_selection = Sheet.SelectedIndex;
                 Sheet.Items.Refresh();
                 if (!started)
                     Connections.Content = $"Подключений: 0";
@@ -101,10 +101,9 @@ namespace ModbusTCP_Server
                 {
                     Device_combobox.Items.Add(d.ID);
                 }
-                if (devices.Count > 0)
+                if (Sheet.Items.Count >= old_selection)
                 {
-                    Device_combobox.SelectedIndex = 0;
-                    Sheet.SelectedIndex = 0;
+                    Sheet.SelectedIndex = old_selection;
                 }
             });
         }
@@ -155,7 +154,7 @@ namespace ModbusTCP_Server
             {
                 if (!short.TryParse(Register_textbox.Text, out short value))
                 {
-                    MessageBox.Show("Недопустимое значение переменной!", "Ошибка отправки", MessageBoxButton.OK, MessageBoxImage.Error);
+                    MessageBox.Show("Значение должно быть в диапозоне от -32768 до 32767", "Ошибка отправки", MessageBoxButton.OK, MessageBoxImage.Error);
                     return;
                 }
                 if (Cell_combobox.SelectedIndex == 2)
@@ -167,6 +166,8 @@ namespace ModbusTCP_Server
         }
         private void UpdateDataFields()
         {
+            if (selected_device == null)
+                return;
             if (Cell_combobox.SelectedIndex < 2)
             {
                 Register_textbox.Visibility = Visibility.Hidden;

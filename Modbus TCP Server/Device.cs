@@ -11,9 +11,9 @@ namespace Modbus_TCP_Server
         public int ID { get; set; }
         public bool Coil { get; set; }
         public bool Discrete_Input { get; set; }
-        public int Holding_Register { get; set; }
-        public int Input_Register { get; set; }
-        public Device(int id, bool coil, bool di, int hr, int ir)
+        public short Holding_Register { get; set; }
+        public short Input_Register { get; set; }
+        public Device(int id, bool coil, bool di, short hr, short ir)
         {
             Coil = coil;
             Discrete_Input = di;

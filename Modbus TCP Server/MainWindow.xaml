@@ -4,8 +4,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ModbusTCP_Server"
-        mc:Ignorable="d"
-        Title="ModbusTCP Server" Height="450" Width="800">
+        mc:Ignorable="d" MinHeight="400" MinWidth="700"
+        Title="ModbusTCP Server" Height="400" Width="700">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="40*"/>
@@ -47,8 +47,8 @@
             <Label Content="Значение" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="5"/>
             <ComboBox Name="Ceil_combobox" Visibility="Hidden" Grid.Column="1" Grid.Row="5" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Width="128"/>
             <TextBox Name="Register_textbox" Visibility="Hidden" Grid.Column="1" Grid.Row="5" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Width="128"/>
-            <Button Name="LaunchButton" Content="Запустить" HorizontalAlignment="Left" VerticalAlignment="bottom" Margin="30" Grid.Column="1" Grid.Row="6" Click="LaunchButton_Click"/>
-            <Button Name="Send_button" Content="Отправить" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="30" Grid.Row="6" Grid.Column="1" Click="Send_button_Click"/>
+            <Button Name="LaunchButton" Content="Запустить" HorizontalAlignment="Left" VerticalAlignment="bottom" Margin="20" Grid.Column="1" Grid.Row="6" Click="LaunchButton_Click"/>
+            <Button Name="Send_button" Content="Отправить" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20" Grid.Row="6" Grid.Column="1" Click="Send_button_Click"/>
             <Label Name="Connections" Content="Подключений: 0" VerticalAlignment="Bottom" HorizontalAlignment="Left" Grid.Row="6" Grid.Column="1"/>
         </Grid>
 
