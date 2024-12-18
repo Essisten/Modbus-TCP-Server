@@ -43,9 +43,17 @@
             <Label Content="Устройство" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="3"/>
             <ComboBox Name="Device_combobox" Grid.Column="1" Grid.Row="3" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Width="128" SelectionChanged="Device_combobox_SelectionChanged"/>
             <Label Content="Пространство" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="4"/>
-            <ComboBox Name="Cell_combobox" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Width="128" SelectionChanged="Cell_combobox_SelectionChanged"/>
+            <ComboBox Name="Cell_combobox" Grid.Column="1" Grid.Row="4" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Width="128" SelectionChanged="Cell_combobox_SelectionChanged" SelectedIndex="0">
+                <ComboBoxItem Content="Coil"/>
+                <ComboBoxItem Content="Discrete Input"/>
+                <ComboBoxItem Content="Holding Register"/>
+                <ComboBoxItem Content="Input Register"/>
+            </ComboBox>
             <Label Content="Значение" HorizontalAlignment="Right" VerticalAlignment="Center" Grid.Row="5"/>
-            <ComboBox Name="Ceil_combobox" Visibility="Hidden" Grid.Column="1" Grid.Row="5" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Width="128"/>
+            <ComboBox Name="Coil_combobox" Visibility="Hidden" Grid.Column="1" Grid.Row="5" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Width="128">
+                <ComboBoxItem Content="False"/>
+                <ComboBoxItem Content="True"/>
+            </ComboBox>
             <TextBox Name="Register_textbox" Visibility="Hidden" Grid.Column="1" Grid.Row="5" HorizontalAlignment="Left" Margin="10,0,0,0" VerticalAlignment="Center" Width="128"/>
             <Button Name="LaunchButton" Content="Запустить" HorizontalAlignment="Left" VerticalAlignment="bottom" Margin="20" Grid.Column="1" Grid.Row="6" Click="LaunchButton_Click"/>
             <Button Name="Send_button" Content="Отправить" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="20" Grid.Row="6" Grid.Column="1" Click="Send_button_Click"/>

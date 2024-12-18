@@ -23,14 +23,6 @@ namespace ModbusTCP_Server
             InitializeComponent();
             started = false;
             devices = new List<Device>();
-            Cell_combobox.Items.Add("Coil");
-            Cell_combobox.Items.Add("Discrete Input");
-            Cell_combobox.Items.Add("Holding Register");
-            Cell_combobox.Items.Add("Input Register");
-            Cell_combobox.SelectedIndex = 0;
-
-            Ceil_combobox.Items.Add("False");
-            Ceil_combobox.Items.Add("True");
         }
 
         private void LaunchButton_Click(object sender, RoutedEventArgs e)
@@ -45,7 +37,7 @@ namespace ModbusTCP_Server
             else
             {
                 //Запуск сервера
-                //Введённые данные можно проверять на валидность как try/catch, так и при помощи regex
+                //Введённые данные можно проверять на валидность как try/catch, TryParse, так и при помощи regex
                 Regex IP_regex = new Regex("^(?:\\d{1,3}\\.){3}\\d{1,3}$");
                 if (!IP_regex.IsMatch(IP_textbox.Text))
                 {
@@ -73,6 +65,10 @@ namespace ModbusTCP_Server
             started = !started;
             UpdateSheet();
         }
+
+        /// <summary>
+        /// Обновляет содержимое DataGrid и счётчик подключений
+        /// </summary>
         private void UpdateSheet()
         {
             devices.Clear();
@@ -83,8 +79,11 @@ namespace ModbusTCP_Server
                     if (server.coils.localArray[i] || server.discreteInputs.localArray[i] ||
                         server.holdingRegisters.localArray[i] != 0 || server.inputRegisters.localArray[i] != 0)
                     {
-                        devices.Add(new Device(i, server.coils.localArray[i], server.discreteInputs.localArray[i],
-                                    server.holdingRegisters.localArray[i], server.inputRegisters.localArray[i]));
+                        bool coil = server.coils.localArray[i],
+                               di = server.discreteInputs.localArray[i];
+                        short hr = server.holdingRegisters.localArray[i],
+                              ir = server.inputRegisters.localArray[i];
+                        devices.Add(new Device(i, coil, di, hr, ir));
                     }
                 }
             }
@@ -144,7 +143,7 @@ namespace ModbusTCP_Server
                 return;
             if (Cell_combobox.SelectedIndex < 2)
             {
-                bool value = Convert.ToBoolean(Ceil_combobox.SelectedIndex);
+                bool value = Convert.ToBoolean(Coil_combobox.SelectedIndex);
                 if (Cell_combobox.SelectedIndex == 0)
                     server.coils.localArray[selected_device.ID] = value;
                 else
@@ -164,6 +163,10 @@ namespace ModbusTCP_Server
             }
             UpdateSheet();
         }
+
+        /// <summary>
+        /// Обновляет поле ввода данных в соответствии с выбранным пространством
+        /// </summary>
         private void UpdateDataFields()
         {
             if (selected_device == null)
@@ -171,17 +174,17 @@ namespace ModbusTCP_Server
             if (Cell_combobox.SelectedIndex < 2)
             {
                 Register_textbox.Visibility = Visibility.Hidden;
-                Ceil_combobox.Visibility = Visibility.Visible;
+                Coil_combobox.Visibility = Visibility.Visible;
                 bool value;
                 if (Cell_combobox.SelectedIndex == 0)
                     value = selected_device.Coil;
                 else
                     value = selected_device.Discrete_Input;
-                Ceil_combobox.SelectedIndex = Convert.ToInt32(value);
+                Coil_combobox.SelectedIndex = Convert.ToInt32(value);
             }
             else
             {
-                Ceil_combobox.Visibility = Visibility.Hidden;
+                Coil_combobox.Visibility = Visibility.Hidden;
                 Register_textbox.Visibility = Visibility.Visible;
                 int value;
                 if (Cell_combobox.SelectedIndex == 2)
@@ -205,6 +208,7 @@ namespace ModbusTCP_Server
         {
             //UpdateSheet();
             //Тут должно быть ограничение на количество подключений, но я не знаю как это сделать
+            //Заметка: по какой-то причине событие вызывается каждую секунду, делая ввод данных затруднительным
         }
     }
 }
